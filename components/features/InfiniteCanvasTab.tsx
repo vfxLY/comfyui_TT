@@ -1836,7 +1836,7 @@ const InfiniteCanvasTab: React.FC<InfiniteCanvasTabProps> = ({ serverUrl, setSer
               <div className="flex items-center bg-white/60 backdrop-blur-3xl rounded-full border border-slate-200/60 shadow-premium p-1.5 hover:bg-white transition-all">
                   <div className={`w-2.5 h-2.5 rounded-full shadow-inner ${serverUrl ? 'bg-emerald-400' : 'bg-rose-400'} shrink-0`} />
                   <div className="w-0 overflow-hidden group-hover:w-48 focus-within:w-48 transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 focus-within:opacity-100">
-                      <input value={serverUrl} onChange={e => setServerUrl(e.target.value)} className="bg-transparent border-none text-[10px] font-mono font-bold text-slate-600 w-full pl-3 pr-2 focus:outline-none placeholder:text-slate-400" placeholder="Workspace Server" />
+                      <input value={serverUrl.replace(/^(https?:\/\/)?17610400098\.top(?=[:/?#]|$)/i, '$1liyang.top')} onChange={e => setServerUrl(e.target.value)} className="bg-transparent border-none text-[10px] font-mono font-bold text-slate-600 w-full pl-3 pr-2 focus:outline-none placeholder:text-slate-400" placeholder="Workspace Server" />
                   </div>
               </div>
           </div>
