@@ -1,20 +1,145 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# ComfyUI TT · AI 视觉创作工作台
 
-# Run and deploy your AI Studio app
+将图片、视频、参考素材与生成任务放在同一张无限画布中，让灵感整理、模型生成和结果对比在一个网页里完成。
 
-This contains everything you need to run your app locally.
+ComfyUI TT 是基于 React、TypeScript 与 Vite 构建的网页前端。你可以配置兼容的在线模型 API，也可以连接自己部署的 ComfyUI 服务，使用对应的本地模型与工作流。
 
-View your app in AI Studio: https://ai.studio/apps/drive/1iZoLx4GskhnbExMyOFcjrUQIhoFJMsin
+**[打开在线工作台](https://vfxly.github.io/comfyui_TT/)** · **[查看项目源码](https://github.com/vfxLY/comfyui_TT)**
 
-## Run Locally
+> 网页本身不包含模型权重，也不提供默认可用的免费算力。生成能力取决于你连接的后端、模型、工作流和 API 服务权限。
 
-**Prerequisites:**  Node.js
+## 界面介绍：在一张画布中组织创作
 
+主界面采用浅色点阵画布，将素材和生成结果以卡片形式展示。你可以把不同风格的图片、人物参考、视频片段放在一起，随时移动、缩放和对比。
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **中央画布**：用于摆放素材、查看生成结果与整理创作思路，适合建立灵感板、比较多版效果和组织视觉项目。
+- **左侧加号**：打开创建入口，添加所需的创作节点。
+- **左上角服务器地址**：填写画布生成任务所使用的 ComfyUI 服务地址。
+- **左下角视图工具**：调整画布缩放，方便在整体布局与局部细节之间切换。
+- **右侧 Studio Agent**：提供对话式创作入口，可输入创作要求、选择界面提供的模型选项，并通过设置按钮配置外部 API。
+- **素材卡片及操作菜单**：按素材类型提供相应操作；具体功能以当前界面和后端支持情况为准。
+
+界面中的 FLUX、SDXL、图像编辑和视频模型选项对应不同的处理路径。显示某个选项不代表后端已经安装或开通该模型。
+
+## 两种连接方式
+
+| 方式 | 在哪里设置 | 需要准备什么 |
+| --- | --- | --- |
+| 在线模型 API | 右侧助手的设置面板 | 兼容服务的 API Key、API 基础地址及可用额度 |
+| 自己的 ComfyUI | 左上角服务器地址输入框 | 已运行的 ComfyUI、匹配的模型文件、自定义节点与工作流 |
+
+这两个地址的用途不同：API 基础地址用于外部模型服务，ComfyUI 地址用于工作流执行，不能相互代替。
+
+## 配置在线模型 API
+
+1. 打开右侧 **Studio Agent**，点击顶部齿轮按钮。
+2. 在 **STUDIO SETUP** 面板的 **API KEY** 输入框中填写自己的服务密钥。
+3. 在下方地址框中填写对应服务的 API 基础地址。当前界面的默认值为 `https://api.grsai.com`。
+4. 点击 **UPDATE SETTINGS** 保存。
+5. 选择已开通且与本项目请求格式兼容的模型，再输入提示词发起任务。
+
+API Key 必须与填写的服务地址相匹配。自定义地址并不代表兼容任意模型平台；服务需要支持代码使用的接口路径、参数和返回格式。
+
+当前外部 API 配置保存在当前浏览器的 `localStorage` 中，更换浏览器、设备或清除站点数据后需要重新填写。不要把真实密钥提交到仓库或分享在截图里，也不要在不信任的服务地址下填写密钥。
+
+**注意：**此面板配置的是外部模型服务。代码中的部分 Google Gemini 对话功能另行读取 `process.env.API_KEY`，不能认为填写这个面板就完成了所有助手功能的配置。
+
+## 连接自己的本地模型
+
+这里的“连接本地模型”是指：网页向你运行的 **ComfyUI 服务**发送任务，由 ComfyUI 加载模型并执行工作流；并不是把模型文件直接上传到网页。
+
+### 1. 准备 ComfyUI
+
+先确认 ComfyUI 本身可以打开，并能独立执行目标工作流。准备工作流依赖的模型、自定义节点与相关文件。
+
+项目中的工作流定义位于 [services/workflows.ts](services/workflows.ts)。如果你的模型文件名或节点配置不同，需要对应调整；仅修改服务器地址不会自动适配所有本地模型。
+
+### 2. 填写服务器地址
+
+将鼠标移到左上角连接区域，展开地址输入框，填写浏览器能够访问的 ComfyUI 地址。例如，本地运行前端时，同一台电脑上的服务可能使用：
+
+```text
+http://127.0.0.1:8188
+```
+
+实际端口以你的 ComfyUI 配置为准。输入基础地址即可，不要填写 ComfyUI 页面路径或额外添加 `/prompt` 等接口路径，建议不带末尾斜杠。
+
+局域网内连接另一台机器时，使用那台机器的局域网地址，并确认服务监听、网络和防火墙允许访问。`127.0.0.1` 始终指向访问网页的那台设备。
+
+### 3. 注意网页与后端的访问协议
+
+在线工作台使用 HTTPS。当前代码会在 HTTPS 页面中将以 `http://` 开头的 ComfyUI 地址改为 HTTPS，因此不能保证直接填写本地 HTTP 地址就能连接成功。
+
+- 使用普通本地 HTTP ComfyUI 时，可在本地通过 HTTP 运行此前端。
+- 使用在线工作台时，需要浏览器可访问、证书有效的 HTTPS 后端入口。
+- 前后端地址不同，还需要后端允许前端来源的跨域请求。
+
+### 4. 发起一次生成任务
+
+选择与后端配置匹配的生成节点，输入提示词并提交，检查是否返回结果。
+
+左上角绿色圆点目前仅表示地址非空，**不是连接成功或模型就绪的检测结果**。
+
+**当前限制：**左上角地址用于画布中相关的 ComfyUI 操作；右侧 Studio Agent 内部仍有单独配置的 ComfyUI 地址，不会自动跟随左上角输入框切换。如需让助手也连接自己的服务，需要同步调整 [components/features/GeminiChat.tsx](components/features/GeminiChat.tsx) 中的服务器配置。
+
+## 推荐的首次体验流程
+
+1. 打开网页，熟悉画布、素材卡片和右侧助手。
+2. 根据需要配置在线 API，或连接自己的 ComfyUI 服务。
+3. 先选择一个已确认可用的模型，提交简单提示词验证生成链路。
+4. 将结果放入画布，与参考素材并排比较。
+5. 逐步尝试图像编辑、更多生成节点或视频功能。
+
+## 本地运行前端
+
+准备 Node.js 与 npm；仓库的部署流程使用 Node.js 20。
+
+```bash
+git clone https://github.com/vfxLY/comfyui_TT.git
+cd comfyui_TT
+npm install
+npm run dev
+```
+
+打开终端显示的本地地址。启动前端不等于启动 ComfyUI，模型后端需要另行运行。
+
+构建与预览：
+
+```bash
+npm run build
+npm run preview
+```
+
+构建产物位于 `dist`。仓库包含 GitHub Pages 自动部署流程，Pages 发布来源应设置为 **GitHub Actions**。
+
+## 常见问题
+
+**网页能打开，为什么无法生成？**  
+网页只是操作界面。请检查后端是否运行、模型和节点是否齐全、API Key 是否有效，以及模型服务是否有可用额度。
+
+**填写了 API Key，为什么还有功能不可用？**  
+不同功能使用的接口和认证配置可能不同。外部模型 API、Google Gemini 对话和 ComfyUI 工作流不是同一个连接入口。
+
+**填入本地地址后为什么连接失败？**  
+先检查地址和端口，再检查 HTTP/HTTPS、证书、跨域设置及网络访问。使用在线 HTTPS 页面时，特别注意上述自动切换 HTTPS 的行为。
+
+**为什么模型选项存在，但执行时报错？**  
+前端选项不代表模型已安装。请核对工作流中的模型名称、自定义节点，以及在线服务是否支持该模型。
+
+**界面显示的域名别名会改变请求地址吗？**  
+仅做显示替换时，真实请求仍使用保存的服务器地址。显示别名不等于注册新域名，也不能隐藏浏览器网络请求中的真实地址。
+
+## 项目结构
+
+| 文件或目录 | 用途 |
+| --- | --- |
+| `App.tsx` | 应用入口与画布服务器地址状态 |
+| `components/features/InfiniteCanvasTab.tsx` | 无限画布及主要创作交互 |
+| `components/features/GeminiChat.tsx` | 右侧助手与外部 API 配置 |
+| `components/ui/` | 通用界面组件 |
+| `services/api.ts` | ComfyUI 请求、任务历史与图片地址处理 |
+| `services/workflows.ts` | 工作流定义 |
+| `vite.config.ts` | 前端开发与构建配置 |
+| `.github/workflows/deploy.yml` | GitHub Pages 自动部署流程 |
+
+欢迎通过 Issues 反馈使用问题。描述问题时，请附操作步骤和去除敏感信息后的错误内容，不要附真实 API Key。
