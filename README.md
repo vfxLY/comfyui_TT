@@ -10,6 +10,10 @@ ComfyUI TT 是基于 React、TypeScript 与 Vite 构建的网页前端。你可�
 
 ## 界面介绍：在一张画布中组织创作
 
+![ComfyUI TT 无限画布与右侧 Studio Agent 界面](docs/images/interface.png)
+
+*图 1：在无限画布中摆放图片、视频和参考素材，通过右侧助手开展创作。*
+
 主界面采用浅色点阵画布，将素材和生成结果以卡片形式展示。你可以把不同风格的图片、人物参考、视频片段放在一起，随时移动、缩放和对比。
 
 - **中央画布**：用于摆放素材、查看生成结果与整理创作思路，适合建立灵感板、比较多版效果和组织视觉项目。
@@ -32,6 +36,10 @@ ComfyUI TT 是基于 React、TypeScript 与 Vite 构建的网页前端。你可�
 
 ## 配置在线模型 API
 
+![Studio Setup 中的 API Key 与服务地址设置](docs/images/api-settings.png)
+
+*图 2：填写自己的 API Key 和对应服务地址，点击 UPDATE SETTINGS 保存。截图未包含真实密钥。*
+
 1. 打开右侧 **Studio Agent**，点击顶部齿轮按钮。
 2. 在 **STUDIO SETUP** 面板的 **API KEY** 输入框中填写自己的服务密钥。
 3. 在下方地址框中填写对应服务的 API 基础地址。当前界面的默认值为 `https://api.grsai.com`。
@@ -45,6 +53,10 @@ API Key 必须与填写的服务地址相匹配。自定义地址并不代表兼
 **注意：**此面板配置的是外部模型服务。代码中的部分 Google Gemini 对话功能另行读取 `process.env.API_KEY`，不能认为填写这个面板就完成了所有助手功能的配置。
 
 ## 连接自己的本地模型
+
+![ComfyUI 服务器地址输入位置](docs/images/local-connection.png)
+
+*图 3：左上角的 ComfyUI 服务地址入口。截图中的 liyang.top 为显示别名；连接本地模型时，请填写自己实际可访问的 ComfyUI 地址。*
 
 这里的“连接本地模型”是指：网页向你运行的 **ComfyUI 服务**发送任务，由 ComfyUI 加载模型并执行工作流；并不是把模型文件直接上传到网页。
 
